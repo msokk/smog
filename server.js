@@ -1,5 +1,6 @@
-#!/usr/bin/env node
-var connect = require('connect');
+﻿
+var connect = require('connect'),
+    io = require('socket.io');
 
 var server = connect.createServer(
     connect.logger(),
@@ -7,3 +8,10 @@ var server = connect.createServer(
 );
 
 server.listen(3000);
+
+var socket = io.listen(server); 
+socket.on('connection', function(client){ 
+  client.on('message', function(data){
+    client.broadcast(data);
+  }); 
+}); 
