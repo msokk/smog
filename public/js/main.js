@@ -4,6 +4,7 @@ $(document).ready(function() {
   var socket = new io.Socket();
   socket.connect();
   socket.on('message', function(data){
+    console.log(data);
     //var d = new Date();
     receiveMsg(data);
   });
@@ -29,7 +30,16 @@ $(document).ready(function() {
   
   var sendMsg = function() {
     var obj = { name: $("#nameBox").val(), msg : $("#txtBox").val() };
-    socket.send(obj);
+    if($("#txtBox").val() == "test") {
+      socket.send({ 
+        type: "login-request", 
+        data : {
+          username : $("#nameBox").val()
+        }
+      })
+    } else {
+      socket.send(obj);
+    }
     $("#txtBox").val("");
   };
 });
