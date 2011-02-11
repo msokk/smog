@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 ﻿#!/bin/env node
-=======
->>>>>>> 63ced642e869b23584c2fa0880f9f5b9db2677c1
 var connect = require('connect'),
     io = require('socket.io');
 
