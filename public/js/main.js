@@ -22,14 +22,14 @@ $(document).ready(function() {
     '<span id="name">'+data.name+'</span>:'+
     '<span id="content">'+data.msg+'</span>'+
     '</li>')
-      .prependTo('#container ul')
-      .fadeIn(); 
+      .appendTo('#container ul')
+      .fadeIn();
+      $('#content').scrollTop($('ul').height());
   };
   
   var sendMsg = function() {
     var obj = { name: $("#nameBox").val(), msg : $("#txtBox").val() };
     socket.send(obj);
-    receiveMsg(obj);
     $("#txtBox").val("");
   };
 });
