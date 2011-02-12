@@ -10,7 +10,7 @@ var modules = fs.readdirSync("modules"),
 
 for(var i = 0; i < modules.length; i++) {
 
-  if(modules[i] === "index.js") continue;
+  if(modules[i] === "index.js" || modules[i] === "core.js") continue;
   var modName = modules[i].substring(0, modules[i].length - 3);
   var currentModule = exports[modName] = require(modName);
   
@@ -21,4 +21,4 @@ for(var i = 0; i < modules.length; i++) {
   }
 }
 
-exports.moduleMap = moduleMap;
+exports._moduleMap = moduleMap;
