@@ -12,6 +12,8 @@
           if(command[1] == "play") {
             var queryString = command.slice(2).join(" ");
             that.search(queryString);
+          }else if(command[1] == "pause"){
+              $("#sc-player")[0].pause();
           }
           return null;
         } else {
