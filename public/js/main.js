@@ -20,8 +20,8 @@ $(document).ready(function() {
       that.route(data);
     });
     
-    var routes = this.routes = [];
-    var chatFilters = this.chatFilters = [];
+    var routes = Smog.routes = this.routes = [];
+    var chatFilters = Smog.chatFilters = this.chatFilters = [];
     Smog.Core.init(routes, chatFilters);
     
     this.initUI();
@@ -75,11 +75,21 @@ $(document).ready(function() {
   
   Smog.Core = {
     init: function(routes, chatFilters) {
+      chatFilters.push({
+        process: function(str) {
+          return str.replace(/&/g,'&amp;')
+                    .replace(/</g,'&lt;')
+                    .replace(/>/g,'&gt;');
+        }
+      });
     
       routes.push({
         type: "login-success",
         command: function(data) {
           Smog.UI.displayInfoMsg("Sisselogitud! Moodulid : " + JSON.stringify(data.modules));
+          for(var i = 0; i < data.modules.length; i++) {
+            head.js("modules/" + data.modules[i] + ".js");
+          }
         }
       }, {
         type: "login-fail",
