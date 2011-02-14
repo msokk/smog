@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
 var connect = require('connect'),
-    fs = require('fs'),
-    io = require('socket.io')
-    modules = require('./modules'),
-    core = require('./modules/core.js');
+    fs      = require('fs'),
+    io      = require('socket.io')
+    core = require('./modules/core');
 
 //Static server
 var server = connect.createServer(
@@ -14,48 +13,24 @@ var server = connect.createServer(
 );
 server.listen(3000);
 
+//Socket server
+var socket = io.listen(server);
 
-var clients = {},
-    auth = core.auth,
-    userMap = core.userMap;
-  
-
-var socket = io.listen(server); 
-
-//Augment broadcast for our needs
+//Switch broadcast with announce
+socket.announce = socket.broadcast;
 socket.broadcast = function(obj) {
-  var users = Object.keys(userMap);
+  var users = Object.keys(core.userMap);
   for(var i = 0; i < users.length; i++) {
     socket.clients[users[i]].send(obj);
   }
 };
 
 socket.on('connection', function(client){
-
   client.on('message', function(data){
-    if(data == "" || !data.type) { client.send({ type: "invalid" }); return; }
-    var moduleName = modules._moduleMap[data.type];
-    
-    //Privileged access
-    if(auth(client.sessionId)) {
-      if(data.type == "chat") {
-        socket.broadcast({ 
-          type: "chat", 
-          username: userMap[client.sessionId],
-          msg: data.msg
-        });
-      } else {
-        modules[moduleName].init.call(null, data, client);
-      }
-    //Otherwise only login is accessible 
-    } else if(data.type == "login-request") {
-      core.init.call(null, data, client, Object.keys(modules));
-    }
+    core.handleRequest(client, data);
   });
   
   client.on('disconnect', function() {
-    if(auth(client.sessionId)) {
-      core.disconnected(this);
-    }
+    core.handleDisconnect(client);
   });
-}); 
+});

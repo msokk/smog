@@ -26,15 +26,11 @@ $(document).ready(function() {
     
     this.initUI();
     
-    this.debug();    
+    this.debug();
   };
   
   Smog.Main.prototype.debug = function() {
-    this.socket.send({ 
-      type: "login-request", 
-      username: "Mihkel",
-      hash: "0aaec463110aaad3f8fcfe24bd64c91b95b082bd5f7fd36eb14d0390d7ddc7f2"
-    }); 
+
   };
   
   Smog.Main.prototype.initUI = function() {
@@ -45,7 +41,34 @@ $(document).ready(function() {
       if (event.which == '13') {
         that.sendMsg();
         $('#txtBox').val("");
-        $('#txtBox').focus();
+      }
+    });
+    var user = "";
+    var credentials = $('#credentials');
+    credentials.focus();
+    credentials.keypress(function(event) {
+      if (event.which == '13') {
+        if(!user) {
+          user = credentials.val();
+          credentials.val("");
+          var newButton = credentials.clone();
+          newButton.attr("type", "password");
+          newButton.attr('placeholder', 'Password');
+          newButton.attr("id", "credentials");
+          newButton.insertBefore(credentials);
+          credentials.remove();
+          newButton.focus();
+        } else {
+          var password = credentials.val();
+          that.socket.send({ 
+            type: "login-request",
+            username: user,
+            hash: hex_sha256(password)
+          });
+          
+          $("#loginPane").remove();
+          $('#txtBox').focus();
+        }
       }
     });
   };
@@ -62,7 +85,7 @@ $(document).ready(function() {
         "msg": msg
       });
     }
-  };  
+  };
   
 
   Smog.Main.prototype.route = function(data) {
@@ -88,7 +111,7 @@ $(document).ready(function() {
         command: function(data) {
           Smog.UI.displayInfoMsg("Sisselogitud! Moodulid : " + JSON.stringify(data.modules));
           for(var i = 0; i < data.modules.length; i++) {
-            head.js("modules/" + data.modules[i] + ".js");
+            head.js("modules/" + data.modules[i]);
           }
         }
       }, {
@@ -114,11 +137,7 @@ $(document).ready(function() {
       });
     }
   };
-  
-})();
 
-
-(function() {
   Smog.UI = {
     displayChatMsg : function(nick, msg) {
       $('<li class="message">'+
@@ -142,10 +161,14 @@ $(document).ready(function() {
   };
 })();
 
+
+
+
+
+
 /* A JavaScript implementation of the Secure Hash Algorithm, SHA-256
  * Version 0.3 Copyright Angel Marin 2003-2004 - http://anmar.eu.org/
  * Distributed under the BSD License
- * Some bits taken from Paul Johnston's SHA-1 implementation
  */
 var chrsz=8;function safe_add(a,c){var d=(a&65535)+(c&65535);return(a>>16)+(c>>16)+(d>>16)<<16|d&65535}function S(a,c){return a>>>c|a<<32-c}function R(a,c){return a>>>c}function Ch(a,c,d){return a&c^~a&d}function Maj(a,c,d){return a&c^a&d^c&d}function Sigma0256(a){return S(a,2)^S(a,13)^S(a,22)}function Sigma1256(a){return S(a,6)^S(a,11)^S(a,25)}function Gamma0256(a){return S(a,7)^S(a,18)^R(a,3)}function Gamma1256(a){return S(a,17)^S(a,19)^R(a,10)}
 function core_sha256(a,c){var d=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,
