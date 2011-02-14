@@ -1,5 +1,12 @@
 var Smog = {
-  ver: 0.1
+  ver: 0.1,
+  debug : true,
+  log : function (msg) {
+    if(window.console != undefined && this.debug) {
+      console.log(msg);
+    }
+  }
+  
 };
 
 $(document).ready(function() {
@@ -16,7 +23,7 @@ $(document).ready(function() {
     var socket = this.socket = new io.Socket();
     socket.connect();
     socket.on('message', function(data){
-      console.log(data); //DEBUG
+      Smog.log(data);
       that.route(data);
     });
     
@@ -43,34 +50,44 @@ $(document).ready(function() {
         $('#txtBox').val("");
       }
     });
-    var user = "";
-    var credentials = $('#credentials');
-    credentials.focus();
-    credentials.keypress(function(event) {
-      if (event.which == '13') {
-        if(!user) {
-          user = credentials.val();
-          credentials.val("");
-          var newButton = credentials.clone();
-          newButton.attr("type", "password");
-          newButton.attr('placeholder', 'Password');
-          newButton.attr("id", "credentials");
-          newButton.insertBefore(credentials);
-          credentials.remove();
-          newButton.focus();
-        } else {
-          var password = credentials.val();
-          that.socket.send({ 
-            type: "login-request",
-            username: user,
-            hash: hex_sha256(password)
-          });
-          
-          $("#loginPane").remove();
-          $('#txtBox').focus();
+    
+    if(!sessionStorage.getItem("username")) {
+      var user = "";
+      var credentials = $('#credentials');
+      credentials.focus();
+      credentials.keypress(function(event) {
+        if (event.which == '13') {
+          if(!user) {
+            user = credentials.val();
+            credentials.val("");
+            var newButton = credentials.clone();
+            newButton.attr("type", "password");
+            newButton.attr('placeholder', 'Password');
+            newButton.attr("id", "credentials");
+            newButton.insertBefore(credentials);
+            credentials.remove();
+            newButton.focus();
+          } else {
+            var password = hex_sha256(credentials.val());
+            that.socket.send({ 
+              type: "login-request",
+              username: user,
+              hash: password
+            });
+            
+            Smog.username = user;
+            Smog.password = password;
+            
+          }
         }
-      }
-    });
+      });
+    } else {
+      that.socket.send({ 
+        type: "login-request",
+        username: sessionStorage.getItem("username"),
+        hash: sessionStorage.getItem("password")
+      });
+    }
   };
   
   Smog.Main.prototype.sendMsg = function() {
@@ -110,6 +127,13 @@ $(document).ready(function() {
         type: "login-success",
         command: function(data) {
           Smog.UI.displayInfoMsg("Sisselogitud! Moodulid : " + JSON.stringify(data.modules));
+          if(!sessionStorage.getItem("username")) {
+            sessionStorage.setItem("username", Smog.username);
+            sessionStorage.setItem("password", Smog.password);
+          }
+          $("#loginPane").remove();
+          $('#txtBox').focus();
+          
           for(var i = 0; i < data.modules.length; i++) {
             head.js("modules/" + data.modules[i]);
           }
