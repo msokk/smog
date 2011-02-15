@@ -4,21 +4,18 @@
     this.consumerKey = "46q8ZDUJD6nbBsaka0DgfA";
     $("body").append('<audio id="sc-player" preload="auto"></audio>');
     
-    Smog.chatFilters.push({
-      process: function(str) {
-
-        if(str.indexOf("!sc") == 0) {
-          var command = str.split(" ");
-          if(command[1] == "play") {
-            var queryString = command.slice(2).join(" ");
-            that.search(queryString);
-          }else if(command[1] == "pause"){
-              $("#sc-player")[0].pause();
-          }
-          return null;
-        } else {
-          return str;
+    Smog.sendFilters.push(function(str) {
+      if(str.indexOf("!sc") == 0) {
+        var command = str.split(" ");
+        if(command[1] == "play") {
+          var queryString = command.slice(2).join(" ");
+          that.search(queryString);
+        }else if(command[1] == "pause"){
+            $("#sc-player")[0].pause();
         }
+        return null;
+      } else {
+        return str;
       }
     });
   }
