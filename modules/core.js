@@ -5,6 +5,7 @@
 
 var fs = require('fs'),
     crypto = require('crypto'),
+    util = require('util'),
     modules = require('../modules').module,
     moduleMap = require('.').moduleMap,
     clientModules = require('.').clientModules,
@@ -13,7 +14,7 @@ var fs = require('fs'),
 var Core = (function() {
   
   var userMap   = {},
-      msgBuffer = {},
+      msgBuffer = [],
   
   auth = function(sessionId) {
     if(userMap[sessionId]) {
@@ -28,8 +29,8 @@ var Core = (function() {
     
     //There is no such user
     if(!config.users[data.username]) {
-      this.send({ type: "login-fail", msg: "Kasutajat ei eksisteeri!" });    
-      return; 
+      this.send({ type: "login-fail", msg: "Kasutajat ei eksisteeri!" });
+      return;
     }
     
     //Wrong or missing password
@@ -37,6 +38,7 @@ var Core = (function() {
       var h = crypto.createHash('sha256');
       h.update(data.hash);
       if(h.digest('hex') != config.users[data.username]) {
+        util.log("Failed login with" + data.username);
         this.send({ type: "login-fail", msg: "Vale parool!" });
         return;
       }
@@ -62,6 +64,13 @@ var Core = (function() {
       type: "chat-new",
       username : data.username
     });
+    util.log(data.username + " joined");
+    
+    //Send buffer
+    for(var i = 0; i < msgBuffer.length; i++) {
+      this.send(msgBuffer[i]);     
+    }
+
   },
   
   //Logout
@@ -71,7 +80,15 @@ var Core = (function() {
         type : "chat-leave",
         username : userMap[client.sessionId]
       });
+      util.log(userMap[client.sessionId] + " left");
       delete userMap[client.sessionId];
+    }
+  },
+  
+  pushBuffer = function(data) {
+    msgBuffer.push(data);
+    if(msgBuffer.length >= 50) {
+      msgBuffer.shift();
     }
   },
   
@@ -84,11 +101,14 @@ var Core = (function() {
     //Privileged access
     if(auth(client.sessionId)) {
       if(data.type == "chat") {
-        client.listener.broadcast({
+        var chatMsg = {
           type: "chat",
           username: userMap[client.sessionId],
           msg: data.msg
-        });
+        };
+        client.listener.broadcast(chatMsg);
+        util.log(chatMsg.username + ": " + chatMsg.msg);
+        pushBuffer(chatMsg);
       } else {
         modules[moduleName].init.call(client, data);
       }

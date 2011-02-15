@@ -2,6 +2,7 @@
 
 var connect = require('connect'),
     fs      = require('fs'),
+    util    = require('util'),
     io      = require('socket.io')
     core = require('./modules/core');
 
@@ -34,3 +35,5 @@ socket.on('connection', function(client){
     core.handleDisconnect(client);
   });
 });
+
+util.log("Smog ready!");

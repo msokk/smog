@@ -32,13 +32,8 @@ $(document).ready(function() {
     Smog.Core.init(routes, chatFilters);
     
     this.initUI();
-    
-    this.debug();
   };
   
-  Smog.Main.prototype.debug = function() {
-
-  };
   
   Smog.Main.prototype.initUI = function() {
     var that = this;
@@ -131,7 +126,8 @@ $(document).ready(function() {
             sessionStorage.setItem("username", Smog.username);
             sessionStorage.setItem("password", Smog.password);
           }
-          $("#loginPane").remove();
+          $("#loginPane").fadeOut(1000, function() { $(this).remove(); });
+          $("#overlay").fadeOut(1000, function() { $(this).remove(); });
           $('#txtBox').focus();
           
           for(var i = 0; i < data.modules.length; i++) {
