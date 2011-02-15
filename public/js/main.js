@@ -20,18 +20,24 @@ $(document).ready(function() {
   Smog.start = function() { return new Smog.Main(); };
   
   Smog.Main = function() {
-    var that = this;
-    var socket = this.socket = new io.Socket();
+    var that = this,
+    socket = this.socket = new io.Socket();
     socket.connect();
     socket.on('message', function(data){
       Smog.log(data);
-      that.route(data);
+      that.routes[data.type].call(that, data);
     });
     
     //Global objects for modules
-    Smog.routes = [];
-    Smog.sendFilters = [];
+    this.routes = {};
+    this.sendFilters = {};
     
+    //Expose API
+    Smog.on = function() { that.on.apply(that, arguments); },
+    Smog.die = function() { that.die.apply(that, arguments); },
+    Smog.filter = function() {  that.filter.apply(that, arguments); },
+    Smog.removeFilter = function() { that.removeFilter.apply(that, arguments); };
+
     //Core functionality uses same system
     Smog.Core.init();
     
@@ -39,6 +45,29 @@ $(document).ready(function() {
     this.bindInput();
   };
   
+  Smog.Main.prototype.on = function(type, callback) {
+    if(!this.routes[type]) {
+      this.routes[type] = callback;
+    } else {
+      throw "This type is already defined!";
+    }
+  };
+
+  Smog.Main.prototype.die = function(type) {
+    delete this.routes[type];
+  };
+  
+  Smog.Main.prototype.filter = function(name, callback) {
+    if(!this.sendFilters[name]) {
+      this.sendFilters[name] = callback;
+    } else {
+      throw "Cant overwrite filter : " + name;
+    }
+  };
+  
+  Smog.Main.prototype.removeFilter = function(name) {
+    delete this.sendFilter[type];
+  };
   
   Smog.Main.prototype.bindInput = function() {
     var that = this;
@@ -61,7 +90,7 @@ $(document).ready(function() {
         if (event.which == '13') {
           
           //Username input
-          if(!user) {Box
+          if(!user) {
             user = credentials.val();
             credentials.val("");
             credentials.clone()
@@ -100,9 +129,12 @@ $(document).ready(function() {
   };
   
   Smog.Main.prototype.sendMsg = function() {
-    var msg = $("#entryBox").val();
-    for(var i = 0; i < Smog.sendFilters.length; i++) {
-      msg = Smog.sendFilters[i](msg);
+    var msg = $("#entryBox").val(),
+        key;
+    for(key in this.sendFilters) {
+      if(this.sendFilters.hasOwnProperty(key)) {
+        msg = this.sendFilters[key](msg);
+      }
     }
     
     if(msg) {
@@ -114,71 +146,52 @@ $(document).ready(function() {
     
     $("#entryBox").val("");
   };
-  
 
-  Smog.Main.prototype.route = function(data) {
-    var routes = Smog.routes;
-    for(var i = 0; i < routes.length; i++) {
-      if(routes[i].type == data.type) {
-        routes[i].command(data);
-      }
-    }
-  };
-  
   Smog.Core = {
     init: function() {
-      
-      Smog.sendFilters.push(function(str) {
+      Smog.filter('htmlentities', function(str) {
         return str.replace(/&/g,'&amp;')
                   .replace(/</g,'&lt;')
                   .replace(/>/g,'&gt;');
       });
     
-      Smog.routes.push({
-        type: "login-success",
-        command: function(data) {
+      Smog.on("login-success", function(data) {
+        //Store username and hash for autologin
+        if(Smog.Storage.get("username")) {
+          $("#loginPane").remove();
+          $("#overlay").remove();
+        } else {
+          Smog.Storage.set("username", Smog.username);
+          Smog.Storage.set("hash", Smog._hash);
+          delete Smog._hash;
           
-          //Store username and hash for autologin
-          if(Smog.Storage.get("username")) {
-            $("#loginPane").remove();
-            $("#overlay").remove();
-          } else {
-            Smog.Storage.set("username", Smog.username);
-            Smog.Storage.set("hash", Smog._hash);
-            delete Smog._hash;
-            
-            $("#loginPane").fadeOut(1000, function() { $(this).remove(); });
-            $("#overlay").fadeOut(1000, function() { $(this).remove(); });
-          }
-          
-          $('#entryBox').focus();
-          
-          Smog.UI.displayInfoMsg("Logged in! Modules : " +
-            JSON.stringify(data.modules));
-          for(var i = 0; i < data.modules.length; i++) {
-            head.js("modules/" + data.modules[i]);
-          }
+          $("#loginPane").fadeOut(1000, function() { $(this).remove(); });
+          $("#overlay").fadeOut(1000, function() { $(this).remove(); });
         }
-      }, {
-        type: "login-fail",
-        command: function(data) {
-          Smog.UI.displayInfoMsg(data.msg);
+        
+        $('#entryBox').focus();
+        
+        Smog.UI.displayInfoMsg("Logged in! Modules : " +
+          JSON.stringify(data.modules));
+        for(var i = 0; i < data.modules.length; i++) {
+          head.js("modules/" + data.modules[i]);
         }
-      }, {
-        type: "chat-new",
-        command: function(data) {
-          Smog.UI.displayInfoMsg(data.username + " liitus!");
-        }
-      }, {
-        type: "chat-leave",
-        command: function(data) {
-          Smog.UI.displayInfoMsg(data.username + " lahkus!");
-        }     
-      }, {
-        type: "chat",
-        command: function(data) {
-          Smog.UI.displayChatMsg(data.username, data.msg);
-        }
+      });
+      
+      Smog.on("login-fail", function(data) {
+        Smog.UI.displayInfoMsg(data.msg);
+      });
+      
+      Smog.on("chat-new", function(data) {
+        Smog.UI.displayInfoMsg(data.username + " liitus!");
+      });
+      
+      Smog.on("chat-leave", function(data) {
+        Smog.UI.displayInfoMsg(data.username + " lahkus!");
+      });
+
+      Smog.on("chat", function(data) {
+        Smog.UI.displayChatMsg(data.username, data.msg);
       });
     }
   };

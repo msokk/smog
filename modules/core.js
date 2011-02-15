@@ -128,4 +128,4 @@ var Core = (function() {
   
 }());
 
-module.exports = Core;
+module.exports = global.core = Core;
