@@ -13,7 +13,7 @@ var server = connect.createServer(
     connect.gzip(),
     connect.staticProvider(__dirname + '/public')
 );
-server.listen(3000);
+server.listen(process.argv[2] || 3000);
 
 //Socket server
 var socket = io.listen(server);

@@ -28,6 +28,10 @@ $(document).ready(function() {
       that.routes[data.type].call(that, data);
     });
     
+    //Input history
+    this.history = [];
+    this.historyIndex = -1;
+    
     //Global objects for modules
     this.routes = {};
     this.sendFilters = {};
@@ -39,7 +43,7 @@ $(document).ready(function() {
     Smog.removeFilter = function() { that.removeFilter.apply(that, arguments); };
 
     //Core functionality uses same system
-    Smog.Core.init();
+    Smog.Core.init.call(this);
     
     this.bindLogin();
     this.bindInput();
@@ -70,8 +74,33 @@ $(document).ready(function() {
   };
   
   Smog.Main.prototype.bindInput = function() {
-    var that = this;
+    var that = this; 
     $("#entryBtn").click(function() { that.sendMsg() });
+    
+    $(document).keydown(function(e) {
+      if($(document.activeElement).attr("id") == "entryBox"
+         && (e.which == '38' || e.which == '40') && that.history.length != 0) {
+        if(e.which == '38') { //Up
+          that.historyIndex++;
+        }
+        
+        if(e.which == '40') { //Down
+          that.historyIndex--;
+        }
+        if(that.historyIndex <= -1) {
+          $("#entryBox").val("");
+          that.historyIndex = -1;
+          return;
+        }
+        
+        if(that.historyIndex >= that.history.length) {
+          that.historyIndex = that.history.length-1;
+        }
+
+        $("#entryBox").val(that.history[that.historyIndex]);
+        $("#entryBox").focus(function() { this.select(); });
+      }
+    });
     $('#entryBox').keypress(function(e) {
       if (e.which == '13') {
         that.sendMsg();
@@ -120,9 +149,10 @@ $(document).ready(function() {
       
     //sessionStorage has data, login automatically
     } else {
+      Smog.username = Smog.Storage.get("username");
       that.socket.send({ 
         type: "login-request",
-        username: Smog.Storage.get("username"),
+        username: Smog.username,
         hash: Smog.Storage.get("hash")
       });
     }
@@ -131,6 +161,15 @@ $(document).ready(function() {
   Smog.Main.prototype.sendMsg = function() {
     var msg = $("#entryBox").val(),
         key;
+    
+    
+    this.history.unshift(msg);
+    if(this.history.length >= 30) {
+      this.history.pop();
+    }
+    this.historyIndex = -1;
+    
+    
     for(key in this.sendFilters) {
       if(this.sendFilters.hasOwnProperty(key) && msg) {
         msg = this.sendFilters[key].call(this, msg);
@@ -149,10 +188,20 @@ $(document).ready(function() {
 
   Smog.Core = {
     init: function() {
+      var that = this;
+      
       Smog.filter('htmlentities', function(str) {
         return str.replace(/&/g,'&amp;')
                   .replace(/</g,'&lt;')
                   .replace(/>/g,'&gt;');
+      });
+      
+      Smog.filter("clear", function(str) {
+        if(str == "/clear") {
+          $("#content ul").empty();
+        } else {
+          return str;
+        }
       });
     
       Smog.on("login-success", function(data) {
