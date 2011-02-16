@@ -9,6 +9,7 @@ var connect = require('connect'),
 //Static server
 var server = connect.createServer(
     //connect.logger(),
+    connect.cache(0),
     connect.gzip(),
     connect.staticProvider(__dirname + '/public')
 );

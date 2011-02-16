@@ -115,7 +115,7 @@ var Core = (function() {
     //Otherwise only login is accessible 
     } else if(data.type == "login-request") {
       login.call(client, data);
-    }    
+    }
   };
   
   return {

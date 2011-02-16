@@ -132,8 +132,8 @@ $(document).ready(function() {
     var msg = $("#entryBox").val(),
         key;
     for(key in this.sendFilters) {
-      if(this.sendFilters.hasOwnProperty(key)) {
-        msg = this.sendFilters[key](msg);
+      if(this.sendFilters.hasOwnProperty(key) && msg) {
+        msg = this.sendFilters[key].call(this, msg);
       }
     }
     
