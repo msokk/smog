@@ -1,0 +1,9 @@
+## INSTALL
+It's as easy as 1-2-3!
+Well, it'd better _will_.
+
+1) ./configure
+2) make
+3) make install
+
+
