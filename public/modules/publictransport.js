@@ -11,6 +11,6 @@
   });
   
   Smog.on("pubtransport-response", function(data) {
-    Smog.UI.displayInfoMsg("Järgmine troll läheb Keemiast " + data.msg);
+    Smog.UI.displayInfoMsg("Transport: Järgmine troll läheb Keemiast " + data.msg);
   });
 })();

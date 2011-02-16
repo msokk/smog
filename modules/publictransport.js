@@ -75,7 +75,7 @@ exports.types = ["pubtransport-request"];
 exports.init = function(data) {
   var that = this;
   PubTransport.checkTime(function(time) {
-    that.send({
+    that.listener.broadcast({
       type: "pubtransport-response",
       msg: time
     });
