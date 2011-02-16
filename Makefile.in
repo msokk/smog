@@ -1,0 +1,21 @@
+###Makefile for Smog
+
+###Placeholder
+BAR=test
+FOO=./build
+
+###Meta-tasks
+.PHONY : $(BAR) clean
+
+###Just to test makefile syntax
+$(BAR): $(FOO)
+	@echo "Generating $(BAR) file.." 
+	@echo $(BAR) > $(FOO)/$(BAR).file 
+	@echo "$(BAR) built successfully!"
+
+$(FOO): 
+	mkdir $@
+
+###Clean up for a new build
+clean: 
+	rm -Rf $(FOO)

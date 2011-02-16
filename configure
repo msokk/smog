@@ -1,0 +1,47 @@
+#!/bin/bash
+### Generates makefile
+
+<<BATTLEPLAN
+	### Set proper variables along the way, naturally
+	### Check file permissions
+	if not readable
+	  die
+	if can not write to directory
+	  die
+	
+	### Check node:
+	if custom path is given
+	  is node at the path
+	    continue
+	  node isn't there
+	    check if node is installed system-wide and die with proper error
+	no path is given
+	  is node installed system-wide
+	    node is installed
+	      set node path and continue
+	    node isn't installed
+	      die
+	
+	### Check node libraries
+	if all libraries aren't installed
+	  die
+	
+	### Generate Makefile
+	if custom Makefile name is not specified
+	  use Makefile
+	if the Makefile exists
+	  if the Makefile is undeletable
+	    die
+	  write Makefile
+BATTLEPLAN
+
+### Set constants
+MAKE_TPL=Makefile.in
+MAKE_FILE=Makefile
+
+### Variable
+RUNNING_DIR=$(dirname $0)
+WORKING_DIR=$(pwd)
+
+### Filler
+cp ${RUNNING_DIR}/${MAKE_TPL} ${WORKING_DIR}/${MAKE_FILE}
