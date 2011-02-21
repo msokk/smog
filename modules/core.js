@@ -9,13 +9,13 @@ var fs = require('fs'),
     modules = require('../modules').module,
     moduleMap = require('.').moduleMap,
     clientModules = require('.').clientModules,
-    config = JSON.parse(fs.readFileSync('config.json').toString());
+    config = JSON.parse(fs.readFileSync(__dirname + '/../config.json').toString());
 
 var Core = (function() {
-  
+
   var userMap   = {},
       msgBuffer = [],
-  
+
   auth = function(sessionId) {
     if(userMap[sessionId]) {
       return true;
@@ -23,16 +23,16 @@ var Core = (function() {
       return false;
     }
   },
-  
+
   //Login sequence
   login = function(data) {
-    
+
     //There is no such user
     if(!config.users[data.username]) {
       this.send({ type: "login-fail", msg: "Kasutajat ei eksisteeri!" });
       return;
     }
-    
+
     //Wrong or missing password
     if(!data.hash) {
       var h = crypto.createHash('sha256');
@@ -43,7 +43,7 @@ var Core = (function() {
         return;
       }
     }
-    
+
     //Check for logged in users
     for (var sessId in userMap) {
       if (userMap.hasOwnProperty(sessId) && userMap[sessId] == data.username) {
@@ -51,28 +51,28 @@ var Core = (function() {
         return;
       }
     }
-    
-  
+
+
     userMap[this.sessionId] = data.username;
     this.send({
       type: "login-success",
       level: 0, //TODO: Different user levels
       "modules" : clientModules
     });
-    
+
     this.listener.broadcast({
       type: "chat-new",
       username : data.username
     });
     util.log(data.username + " joined");
-    
+
     //Send buffer
     for(var i = 0; i < msgBuffer.length; i++) {
-      this.send(msgBuffer[i]);     
+      this.send(msgBuffer[i]);
     }
 
   },
-  
+
   //Logout
   disconnected = function(client) {
     if(auth(client.sessionId)) {
@@ -84,20 +84,20 @@ var Core = (function() {
       delete userMap[client.sessionId];
     }
   },
-  
+
   pushBuffer = function(data) {
     msgBuffer.push(data);
     if(msgBuffer.length >= 50) {
       msgBuffer.shift();
     }
   },
-  
-  
+
+
   //Forward any request
   processRequest = function(client, data) {
     if(data == "" || !data.type) { client.send({ type: "invalid" }); return; }
     var moduleName = moduleMap[data.type];
-    
+
     //Privileged access
     if(auth(client.sessionId)) {
       if(data.type == "chat") {
@@ -112,20 +112,20 @@ var Core = (function() {
       } else {
         modules[moduleName].init.call(client, data);
       }
-    //Otherwise only login is accessible 
+    //Otherwise only login is accessible
     } else if(data.type == "login-request") {
       login.call(client, data);
     }
   };
-  
+
   return {
     userMap : userMap,
     handleDisconnect : disconnected,
     handleRequest : processRequest,
     hasSession: auth
   };
-  
-  
+
+
 }());
 
 module.exports = global.core = Core;

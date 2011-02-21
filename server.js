@@ -4,7 +4,7 @@ var connect = require('connect'),
     fs      = require('fs'),
     util    = require('util'),
     io      = require('socket.io')
-    core = require('./modules/core');
+    core = require(__dirname + '/modules/core');
 
 //Static server
 var server = connect.createServer(
@@ -13,7 +13,10 @@ var server = connect.createServer(
     connect.gzip(),
     connect.staticProvider(__dirname + '/public')
 );
-server.listen(process.argv[2] || 3000);
+
+var port = process.argv[2] || 3000;
+
+server.listen(port);
 
 //Socket server
 var socket = io.listen(server);
@@ -31,10 +34,13 @@ socket.on('connection', function(client){
   client.on('message', function(data){
     core.handleRequest(client, data);
   });
-  
+
   client.on('disconnect', function() {
     core.handleDisconnect(client);
   });
 });
 
-util.log("Smog ready!");
+var url = "http://127.0.0.1:" + port;
+util.log("Smog ready! - Trying to start your browser in: " + url);
+
+require("child_process").exec("x-www-browser " + url);
