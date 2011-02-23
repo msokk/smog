@@ -15,27 +15,44 @@ $(document).ready(function() {
 
 
 (function() {
-  
+
   //Ensures the new keyword
   Smog.start = function() { return new Smog.Main(); };
-  
+
   Smog.Main = function() {
     var that = this,
     socket = this.socket = new io.Socket();
     socket.connect();
+
+    socket.on('connect', function() {
+      Smog.UI.setStatus("yellow");
+    });
+
+    socket.on('disconnect', function() {
+      Smog.UI.setStatus("red");
+      var reconnect = setInterval(function() {
+        socket.connect();
+        if(socket.connected) {
+          clearInterval(reconnect);
+          window.location.href = ""; //Remove refresh in future
+        }
+      }, 2000);
+
+    });
+
     socket.on('message', function(data){
       Smog.log(data);
       that.routes[data.type].call(that, data);
     });
-    
+
     //Input history
     this.history = [];
     this.historyIndex = -1;
-    
+
     //Global objects for modules
     this.routes = {};
     this.sendFilters = {};
-    
+
     //Expose API
     Smog.on = function() { that.on.apply(that, arguments); },
     Smog.die = function() { that.die.apply(that, arguments); },
@@ -44,11 +61,11 @@ $(document).ready(function() {
 
     //Core functionality uses same system
     Smog.Core.init.call(this);
-    
+
     this.bindLogin();
     this.bindInput();
   };
-  
+
   Smog.Main.prototype.on = function(type, callback) {
     if(!this.routes[type]) {
       this.routes[type] = callback;
@@ -60,7 +77,7 @@ $(document).ready(function() {
   Smog.Main.prototype.die = function(type) {
     delete this.routes[type];
   };
-  
+
   Smog.Main.prototype.filter = function(name, callback) {
     if(!this.sendFilters[name]) {
       this.sendFilters[name] = callback;
@@ -68,22 +85,22 @@ $(document).ready(function() {
       throw "Cant overwrite filter : " + name;
     }
   };
-  
+
   Smog.Main.prototype.removeFilter = function(name) {
     delete this.sendFilter[type];
   };
-  
+
   Smog.Main.prototype.bindInput = function() {
-    var that = this; 
+    var that = this;
     $("#entryBtn").click(function() { that.sendMsg() });
-    
+
     $(document).keydown(function(e) {
       if($(document.activeElement).attr("id") == "entryBox"
          && (e.which == '38' || e.which == '40') && that.history.length != 0) {
         if(e.which == '38') { //Up
           that.historyIndex++;
         }
-        
+
         if(e.which == '40') { //Down
           that.historyIndex--;
         }
@@ -92,13 +109,15 @@ $(document).ready(function() {
           that.historyIndex = -1;
           return;
         }
-        
+
         if(that.historyIndex >= that.history.length) {
           that.historyIndex = that.history.length-1;
         }
 
         $("#entryBox").val(that.history[that.historyIndex]);
-        $("#entryBox").focus(function() { this.select(); });
+        setTimeout(function() {
+          $("#entryBox").select();
+        }, 1);
       }
     });
     $('#entryBox').keypress(function(e) {
@@ -107,17 +126,17 @@ $(document).ready(function() {
       }
     });
   };
-  
+
   Smog.Main.prototype.bindLogin = function() {
     var that = this;
     if(!Smog.Storage.get("username")) {
       var user = "",
           credentials = $('#credentials');
       credentials.focus();
-      
+
       credentials.keypress(function(event) {
         if (event.which == '13') {
-          
+
           //Username input
           if(!user) {
             user = credentials.val();
@@ -127,10 +146,10 @@ $(document).ready(function() {
               .attr("id", "credentials")
               .insertBefore(credentials)
               .focus();
-              
+
             credentials.remove();
             $("#infoField").html("Password");
-            
+
           //Password input and login
           } else {
             var hash = hex_sha256(credentials.val());
@@ -139,63 +158,63 @@ $(document).ready(function() {
               username: user,
               hash: hash
             });
-            
+
             //Temporarily store hash and username for successful login
             Smog.username = user;
             Smog._hash = hash;
           }
         }
       });
-      
+
     //sessionStorage has data, login automatically
     } else {
       Smog.username = Smog.Storage.get("username");
-      that.socket.send({ 
+      that.socket.send({
         type: "login-request",
         username: Smog.username,
         hash: Smog.Storage.get("hash")
       });
     }
   };
-  
+
   Smog.Main.prototype.sendMsg = function() {
     var msg = $("#entryBox").val(),
         key;
-    
-    
+
+
     this.history.unshift(msg);
     if(this.history.length >= 30) {
       this.history.pop();
     }
     this.historyIndex = -1;
-    
-    
+
+
     for(key in this.sendFilters) {
       if(this.sendFilters.hasOwnProperty(key) && msg) {
         msg = this.sendFilters[key].call(this, msg);
       }
     }
-    
+
     if(msg) {
       this.socket.send({
         type: "chat",
         "msg": msg
       });
     }
-    
+
     $("#entryBox").val("");
   };
 
   Smog.Core = {
     init: function() {
       var that = this;
-      
+
       Smog.filter('htmlentities', function(str) {
         return str.replace(/&/g,'&amp;')
                   .replace(/</g,'&lt;')
                   .replace(/>/g,'&gt;');
       });
-      
+
       Smog.filter("clear", function(str) {
         if(str == "/clear") {
           $("#content ul").empty();
@@ -203,7 +222,7 @@ $(document).ready(function() {
           return str;
         }
       });
-    
+
       Smog.on("login-success", function(data) {
         //Store username and hash for autologin
         if(Smog.Storage.get("username")) {
@@ -213,29 +232,40 @@ $(document).ready(function() {
           Smog.Storage.set("username", Smog.username);
           Smog.Storage.set("hash", Smog._hash);
           delete Smog._hash;
-          
+
           $("#loginPane").fadeOut(1000, function() { $(this).remove(); });
           $("#overlay").fadeOut(1000, function() { $(this).remove(); });
         }
-        
+
+        Smog.UI.setStatus("green");
+
         $('#entryBox').focus();
-        
+
         Smog.UI.displayInfoMsg("Logged in! Modules : " +
           JSON.stringify(data.modules));
         for(var i = 0; i < data.modules.length; i++) {
           head.js("modules/" + data.modules[i]);
         }
+
+        //Populate user list
+        var sessIds = Object.keys(data.users);
+        for(var i = 0; i < sessIds.length; i++) {
+          Smog.UI.addUser(data.users[sessIds[i]], sessIds[i]);
+        }
+
       });
-      
+
       Smog.on("login-fail", function(data) {
         Smog.UI.displayInfoMsg(data.msg);
       });
-      
+
       Smog.on("chat-new", function(data) {
+        Smog.UI.addUser(data.username, data.sessId);
         Smog.UI.displayInfoMsg(data.username + " liitus!");
       });
-      
+
       Smog.on("chat-leave", function(data) {
+        Smog.UI.deleteUser(data.username);
         Smog.UI.displayInfoMsg(data.username + " lahkus!");
       });
 
@@ -246,6 +276,16 @@ $(document).ready(function() {
   };
 
   Smog.UI = {
+
+    addUser : function(username, sessId) {
+      $('<li data-id="' + sessId + '" data-user="' + username +
+        '">' + username + '</li>').appendTo('#userList');
+    },
+
+    deleteUser : function(username) {
+      $("li[data-user='" + username + "']").remove();
+    },
+
     displayChatMsg : function(nick, msg) {
       $('<li class="message">'+
       '<span id="timestamp"></span>'+
@@ -264,17 +304,21 @@ $(document).ready(function() {
         .appendTo('#container ul')
         .fadeIn();
         $('#content').scrollTop($('ul').height());
+    },
+
+    setStatus : function(color) {
+      $("#microBar").css("background-color", color);
     }
   };
-  
+
   Smog.Storage = (function() {
-    
+
     var hasSupport = function() {
       if(!window.sessionStorage) {
         throw "Missing sessionStorage!";
       }
     };
-    
+
     return {
       get : function(key) {
         hasSupport();
@@ -284,7 +328,7 @@ $(document).ready(function() {
         hasSupport();
         window.sessionStorage.setItem(key, value);
       },
-      
+
       unset : function(key) {
         hasSupport();
         window.sessionStorage.removeItem(key);

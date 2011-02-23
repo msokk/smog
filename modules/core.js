@@ -57,13 +57,16 @@ var Core = (function() {
     this.send({
       type: "login-success",
       level: 0, //TODO: Different user levels
-      "modules" : clientModules
+      "modules" : clientModules,
+      users: userMap
     });
 
-    this.listener.broadcast({
+    this.broadcast({
       type: "chat-new",
-      username : data.username
+      username : data.username,
+      sessId : this.sessionId
     });
+
     util.log(data.username + " joined");
 
     //Send buffer

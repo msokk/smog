@@ -23,10 +23,12 @@ var socket = io.listen(server);
 
 //Switch broadcast with announce
 socket.announce = socket.broadcast;
-socket.broadcast = function(obj) {
+socket.broadcast = function(/*obj, [except] */) {
   var users = Object.keys(core.userMap);
   for(var i = 0; i < users.length; i++) {
-    socket.clients[users[i]].send(obj);
+    if(arguments[1] != users[i]) {
+      socket.clients[users[i]].send(arguments[0]);
+    }
   }
 };
 
@@ -40,7 +42,11 @@ socket.on('connection', function(client){
   });
 });
 
-var url = "http://127.0.0.1:" + port;
-util.log("Smog ready! - Trying to start your browser in: " + url);
+if(!process.argv[2]) {
+  var url = "http://127.0.0.1:" + port;
+  util.log("Smog ready! - Trying to start your browser in: " + url);
 
-require("child_process").exec("x-www-browser " + url);
+  require("child_process").exec("x-www-browser " + url);
+} else {
+  util.log("Smog ready!");
+}
