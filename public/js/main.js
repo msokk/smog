@@ -247,9 +247,8 @@ $(document).ready(function() {
         }
 
         //Populate user list
-        var sessIds = Object.keys(data.users);
-        for(var i = 0; i < sessIds.length; i++) {
-          Smog.UI.addUser(data.users[sessIds[i]], sessIds[i]);
+        for(var key in data.users){
+          Smog.UI.addUser(data.users[key], key);
         }
 
       });
