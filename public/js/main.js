@@ -92,7 +92,6 @@ $(document).ready(function() {
 
   Smog.Main.prototype.bindInput = function() {
     var that = this;
-    $("#entryBtn").click(function() { that.sendMsg() });
 
     $(document).keydown(function(e) {
       if($(document.activeElement).attr("id") == "entryBox"
@@ -237,7 +236,7 @@ $(document).ready(function() {
           $("#overlay").fadeOut(1000, function() { $(this).remove(); });
         }
 
-        Smog.UI.setStatus("green");
+        Smog.UI.setStatus("#00A005");
 
         $('#entryBox').focus();
 
@@ -288,9 +287,9 @@ $(document).ready(function() {
 
     displayChatMsg : function(nick, msg) {
       $('<li class="message">'+
-      '<span id="timestamp"></span>'+
-      '<span id="name">'+nick+'</span>: '+
-      '<span id="content">'+msg+'</span>'+
+      '<span class="timestamp"></span>'+
+      '<span class="name">'+nick+'</span>: '+
+      '<span class="msg">'+msg+'</span>'+
       '</li>')
         .appendTo('#container ul')
         .fadeIn();
@@ -298,8 +297,8 @@ $(document).ready(function() {
     },
     displayInfoMsg : function(msg) {
       $('<li class="message">'+
-      '<span id="timestamp"></span>'+
-      '<span id="content">'+msg+'</span>'+
+      '<span class="timestamp"></span>'+
+      '<span class="msg">'+msg+'</span>'+
       '</li>')
         .appendTo('#container ul')
         .fadeIn();

@@ -73,10 +73,9 @@ var Core = (function() {
     for(var i = 0; i < msgBuffer.length; i++) {
       this.send(msgBuffer[i]);
     }
-
   },
 
-  //Logout
+  //Logout on disconnect
   disconnected = function(client) {
     if(auth(client.sessionId)) {
       client.listener.broadcast({
@@ -86,6 +85,11 @@ var Core = (function() {
       util.log(userMap[client.sessionId] + " left");
       delete userMap[client.sessionId];
     }
+  },
+
+  //Logout on click
+  logout = function(client) {
+    disconnected(client);
   },
 
   pushBuffer = function(data) {
@@ -118,6 +122,8 @@ var Core = (function() {
     //Otherwise only login is accessible
     } else if(data.type == "login-request") {
       login.call(client, data);
+    } else if(data.type == "logout-request") {
+      logout.call(client, data);
     }
   };
 
