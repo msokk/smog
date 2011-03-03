@@ -8,7 +8,8 @@ var fs = require('fs'),
     configPath = __dirname + "/config.json",
     config = JSON.parse(fs.readFileSync(configPath).toString()) || {
       motd : {},
-      users : {}
+      users : {},
+      version : "v0.4.1"
     };
 
 var AdminTool = {
