@@ -9,9 +9,7 @@ var connect = require('connect'),
 //Static server
 var server = connect.createServer(
     //connect.logger(),
-    connect.cache(0),
-    connect.gzip(),
-    connect.staticProvider(__dirname + '/public')
+    connect.static(__dirname + '/public')
 );
 
 var port = process.argv[2] || 3000;
