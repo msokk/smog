@@ -12,7 +12,7 @@ var server = connect.createServer(
     connect.static(__dirname + '/public')
 );
 
-var port = process.argv[2] || 3000;
+var port = process.argv[2] || 80;
 
 server.listen(port);
 
