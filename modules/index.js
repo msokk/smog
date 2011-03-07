@@ -13,7 +13,7 @@ exports.module = {};
 
 
 for(var i = 0; i < modules.length; i++) {
-  if(modules[i] === "index.js" || modules[i] === "core.js") {
+  if(modules[i] === "index.js") {
     continue;
   }
 

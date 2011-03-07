@@ -4,7 +4,7 @@ var connect = require('connect'),
     fs      = require('fs'),
     util    = require('util'),
     io      = require('socket.io')
-    core = require(__dirname + '/modules/core');
+    core = require(__dirname + '/lib/core');
 
 //Static server
 var server = connect.createServer(
