@@ -12,7 +12,7 @@ var server = connect.createServer(
     connect.static(__dirname + '/public')
 );
 
-var port = process.argv[2] || 80;
+var port = process.env.PORT || 3000;
 
 server.listen(port);
 
@@ -40,7 +40,7 @@ socket.on('connection', function(client){
   });
 });
 
-if(!process.argv[2]) {
+if(!process.env.PORT) {
   var url = "http://127.0.0.1:" + port;
   util.log("Smog ready! - Trying to start your browser in: " + url);
 

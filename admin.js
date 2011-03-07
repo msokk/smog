@@ -9,7 +9,7 @@ var fs = require('fs'),
     config = JSON.parse(fs.readFileSync(configPath).toString()) || {
       motd : {},
       users : {},
-      version : "v0.4.1"
+      version : "latest"
     };
 
 var AdminTool = {
