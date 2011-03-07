@@ -9,7 +9,7 @@ var sysinfo = function() {
     uptime: Math.round(os.uptime()/3600) + "h",
     loadavg: os.loadavg(),
     memory: ((!os.freemem())? "": (os.freemem() + " MB / ")) + Math.round(os.totalmem()/1048576) + " MB",
-    cpu: os.cpus()[0].model + " - " + os.cpus().length + " cores"
+    cpu: (os.cpus())? os.cpus()[0].model + " - " + os.cpus().length + " cores": "N/A"
   };
 };
 
