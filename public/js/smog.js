@@ -25,7 +25,7 @@ $(document).ready(function() {
     socket.connect();
 
     socket.on('connect', function() {
-      Smog.UI.setStatus("yellow");
+      Smog.UI.setStatus("#FBF78C");
     });
 
     socket.on('disconnect', function() {
@@ -213,7 +213,7 @@ $(document).ready(function() {
 
       Smog.filter("clear", function(str) {
         if(str == "/clear") {
-          $("#content ul").empty();
+          $("#content").empty();
         } else {
           return str;
         }
@@ -233,7 +233,7 @@ $(document).ready(function() {
           $("#overlay").fadeOut(1000, function() { $(this).remove(); });
         }
 
-        Smog.UI.setStatus("#00A005");
+        Smog.UI.setStatus("#8CFBAD");
 
         $('#entryBox').focus();
 
@@ -266,6 +266,7 @@ $(document).ready(function() {
 
       Smog.on("chat", function(data) {
         Smog.UI.displayChatMsg(data.username, data.msg);
+        $("#content").scrollTop($("#content")[0].scrollHeight);
       });
     }
   };

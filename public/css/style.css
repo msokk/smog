@@ -70,15 +70,15 @@ ul { padding: 0px; margin: 0px; list-style: none; }
 
 body, input {
   font: 13px 'TeXGyreHerosRegular', Arial, sans-serif;
-  color: #B7AEA6;
+  color: #DADADA;
   letter-spacing: 1px;
-  background-color: #191E20;
+  background-color: #313131;
 }
 
 #microBar {
   position: fixed;
   width: 100%;
-  height: 2px;
+  height: 1px;
   background-color: red;
   z-index: 1000;
 }
@@ -87,7 +87,7 @@ body, input {
   float:left;
   position: absolute;
   width: 84.8%;
-  height: 100%;
+  height: 99.8%;
 }
 
 
@@ -102,7 +102,7 @@ body, input {
 
 .name {
   font-weight: bold;
-  color: #1A9CC9;
+  color: #069DE0;
 }
 
 .msg {
@@ -110,42 +110,44 @@ body, input {
 }
 
 #entryField {
-  margin-left: 6px;
-  width: 98%;
+  width: 98.9%;
   height: 30px;
 }
 #entryBox {
   width: 100%;
   border: none;
   outline: none;
-  -moz-box-shadow: 0 0 4px #1A9CC9;
-  -webkit-box-shadow: 0 0 10px #1A9CC9;
-  box-shadow: 0 0 1px #1A9CC9;
-  border-radius: 4px;
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#171E21),color-stop(1,#334048));
+
+  padding: 5px;
+  color: black;
+  background-image: -moz-linear-gradient(top, #C0C0C0, #969696);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#C0C0C0),color-stop(1,#969696));
 }
 
 #content {
+  height: 100%;
   overflow: auto;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   box-flex: 1;
 }
 
-#content ul li {
+#content li {
   padding: 5px;
-  border-top: solid 1px black;
-  background-image: -moz-linear-gradient(top,#242E33,#171E21);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#242E33),color-stop(1,#171E21));
+  background-color: #313131;
+}
+
+#content li:nth-child(odd) {
+  background-color: #373737;
 }
 
 #credentials {
   margin-top: 5px;
   border-radius: 5px;
   padding: 5px;
-  -moz-box-shadow: 0 0 4px #1A9CC9;
+  -moz-box-shadow: 0 0 10px #1A9CC9;
   -webkit-box-shadow: 0 0 10px #1A9CC9;
-  box-shadow: 0 0 1px #1A9CC9;
+  box-shadow: 0 0 10px #1A9CC9;
   border: none;
   outline: none;
 }
