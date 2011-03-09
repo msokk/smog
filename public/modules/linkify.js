@@ -2,10 +2,12 @@
   Smog.filter("youtube", function(str) {
     if(str.indexOf("youtube.com/watch") != -1) {
       var id = str.split('v=')[1].substr(0,11);
-      Smog.UI.displayInfoMsg(Smog.username + ' posted:<br/><iframe title='+
-          '"YouTube video player" width="401" height="250" '+
-          'src="http://www.youtube.com/embed/'+ id +'?rel=0" '+
-          'frameborder="0" allowfullscreen></iframe>');
+      var ytStr = '<br/><iframe title='+
+        '"YouTube video player" width="401" height="250" '+
+        'src="http://www.youtube.com/embed/'+ id +'?rel=0" '+
+        'frameborder="0" allowfullscreen></iframe>';
+      Smog.UI.displayInfoMsg(Smog.username + ' posted:' + ytStr);
+      return ytStr;
     } else {
       return str;
     }
@@ -24,7 +26,10 @@
   });
 
   Smog.filter("makelink", function(str) {
-    return linkify(str);
+    return linkify(str,{ callback: function( text, href ) {
+      return href ? '<a target="_blank" href="' + href +
+        '" title="' + href + '">' + text + '</a>' : text;
+    }});
   });
 
 

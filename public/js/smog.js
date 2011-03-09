@@ -1,5 +1,5 @@
 var Smog = {
-  ver: 0.1,
+  ver: "0.0.1",
   debug : true,
   log : function (msg) {
     if(window.console != undefined && this.debug) {
@@ -30,10 +30,9 @@ $(document).ready(function() {
 
     socket.on('disconnect', function() {
       Smog.UI.setStatus("red");
-      var reconnect = setInterval(function() {
+      setInterval(function() {
         socket.connect();
         if(socket.connected) {
-          clearInterval(reconnect);
           window.location.href = ""; //Remove refresh in future
         }
       }, 2000);
@@ -148,7 +147,6 @@ $(document).ready(function() {
 
             credentials.remove();
             $("#infoField").html("Password");
-
           //Password input and login
           } else {
             var hash = hex_sha256(credentials.val());
@@ -157,7 +155,6 @@ $(document).ready(function() {
               username: user,
               hash: hash
             });
-
             //Temporarily store hash and username for successful login
             Smog.username = user;
             Smog._hash = hash;
@@ -243,7 +240,7 @@ $(document).ready(function() {
         Smog.UI.displayInfoMsg("Logged in! Modules : " +
           JSON.stringify(data.modules));
         for(var i = 0; i < data.modules.length; i++) {
-          head.js("modules/" + data.modules[i]);
+          Smog.load(data.modules[i]);
         }
 
         //Populate user list
@@ -310,29 +307,38 @@ $(document).ready(function() {
   };
 
   Smog.Storage = (function() {
+    var type = session = "sessionStorage",
+        local = "localStorage";
 
-    var hasSupport = function() {
-      if(!window.sessionStorage) {
-        throw "Missing sessionStorage!";
-      }
-    };
+    if(!window[type]) {
+      throw "Missing "+type+"!";
+    }
 
     return {
-      get : function(key) {
-        hasSupport();
-        return window.sessionStorage.getItem(key);
+      get : function(key, persistent) {
+        return window[(persistent)? local: session].getItem(key);
       },
-      set : function(key, value) {
-        hasSupport();
-        window.sessionStorage.setItem(key, value);
+      set : function(key, value, persistent) {
+        window[(persistent)? local: session].setItem(key, value);
       },
 
-      unset : function(key) {
-        hasSupport();
-        window.sessionStorage.removeItem(key);
+      unset : function(key, persistent) {
+        window[(persistent)? local: session].removeItem(key);
       }
     }
   })();
+
+  Smog.load = function(name, callback) {
+    var head= document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    if(callback) {
+      script.onload = function() { callback(); };
+    }
+    script.src = "modules/" + name;
+    head.appendChild(script);
+  };
 
 })();
 

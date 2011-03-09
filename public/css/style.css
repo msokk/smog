@@ -69,7 +69,7 @@ ul { padding: 0px; margin: 0px; list-style: none; }
 */
 
 body, input {
-  font: 14px 'TeXGyreHerosRegular', Arial, sans-serif;
+  font: 13px 'TeXGyreHerosRegular', Arial, sans-serif;
   color: #B7AEA6;
   letter-spacing: 1px;
   background-color: #191E20;
