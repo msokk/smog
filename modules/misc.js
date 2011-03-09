@@ -8,7 +8,8 @@ var sysinfo = function() {
     os: os.type() + " " + os.release(),
     uptime: Math.round(os.uptime()/3600) + "h",
     loadavg: os.loadavg(),
-    memory: ((!os.freemem())? "": (os.freemem() + " MB / ")) + Math.round(os.totalmem()/1048576) + " MB",
+    memory: ((!os.freemem())? "": (Math.round(os.freemem()/1048576) + " MB / "))
+      + Math.round(os.totalmem()/1048576) + " MB",
     cpu: (os.cpus())? os.cpus()[0].model + " - " + os.cpus().length + " cores": "N/A"
   };
 };
