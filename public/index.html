@@ -7,23 +7,29 @@
     <title>Smog</title>
   </head>
   <body>
-    <div id="microBar"></div>
     <div id="overlay"></div>
     <div id="loginPane">
       <span id="infoField">Username</span><br />
       <input id="credentials" type="text" />
     </div>
-    <div id="container" class="vbox">
-      <ul id="content">
-      </ul>
-      <div id="entryField">
-        <input id="entryBox" type="text" />
+    <header>
+      <div id="microBar"></div>
+    </header>
+    <section>
+      <div id="container">
+        <ul id="content">
+        </ul>
+        <div id="entryField">
+          <input id="entryBox" type="text" />
+        </div>
       </div>
-    </div>
-    <div id="sideBar">
-      <ul id="userList">
-      </ul>
-    </div>
+      <div id="sideBar">
+        <ul id="userList">
+        </ul>
+      </div>
+    </section>
+    <footer>
+    </footer>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
     <script src="js/socket.io-0.6.2-min.js"></script>
     <script src="js/smog.js"></script>

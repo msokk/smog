@@ -41,6 +41,9 @@ $(document).ready(function() {
 
     socket.on('message', function(data){
       Smog.log(data);
+      if(!Smog.UI.hasFocus) {
+        Smog.UI.alertTitle();
+      }
       that.routes[data.type].call(that, data);
     });
 
@@ -63,6 +66,15 @@ $(document).ready(function() {
 
     this.bindLogin();
     this.bindInput();
+
+    $(window).bind('blur', function(e) {
+      Smog.UI.hasFocus = false;
+    });
+
+    $(window).bind('focus', function(e) {
+      Smog.UI.hasFocus = true;
+      Smog.UI.clearTitle();
+    });
   };
 
   Smog.Main.prototype.on = function(type, callback) {
@@ -272,6 +284,7 @@ $(document).ready(function() {
   };
 
   Smog.UI = {
+    hasFocus: true,
 
     addUser : function(username, sessId) {
       $('<li data-id="' + sessId + '" data-user="' + username +
@@ -292,6 +305,7 @@ $(document).ready(function() {
         .fadeIn();
         $('#content').scrollTop($('ul').height());
     },
+
     displayInfoMsg : function(msg) {
       $('<li class="message">'+
       '<span class="timestamp"></span>'+
@@ -304,6 +318,15 @@ $(document).ready(function() {
 
     setStatus : function(color) {
       $("#microBar").css("background-color", color);
+    },
+
+    clearTitle: function() {
+      document.title = "Smog";
+    },
+
+    alertTitle: function() {
+      this._title = document.title;
+      document.title = "*SMOG*";
     }
   };
 

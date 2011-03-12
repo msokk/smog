@@ -10,7 +10,7 @@ var sysinfo = function() {
     loadavg: os.loadavg(),
     memory: ((!os.freemem())? "": (Math.round(os.freemem()/1048576) + " MB / "))
       + Math.round(os.totalmem()/1048576) + " MB",
-    cpu: (os.cpus())? os.cpus()[0].model + " - " + os.cpus().length + " cores": "N/A"
+    cpu: (os.cpus())? os.cpus()[0].model + " - " + os.cpus().length + " cores": null
   };
 };
 
