@@ -337,16 +337,22 @@ $(document).ready(function() {
     if(callback) {
       script.onload = function() { callback(); };
     }
-    script.src = "modules/" + name;
+    script.src = "modules/" + name + ((Smog.debug)? "?ts=" + new Date().getTime() : "");
     head.appendChild(script);
   };
 
 })();
 
 
-
-
-
+/**
+ * Returns random decimal number in the range
+ * @param {Number} from
+ * @param {Number} to
+ * @return {Number}
+ */
+Math.randRange = function(from, to) {
+  return from + Math.round(Math.random() * (to - from));
+}
 
 /* A JavaScript implementation of the Secure Hash Algorithm, SHA-256
  * Version 0.3 Copyright Angel Marin 2003-2004 - http://anmar.eu.org/

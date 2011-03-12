@@ -75,6 +75,7 @@ body, input {
   background-color: #313131;
 }
 
+
 #microBar {
   position: fixed;
   width: 100%;
@@ -84,6 +85,7 @@ body, input {
 }
 
 #container {
+  z-index: 2;
   float:left;
   position: absolute;
   width: 84.8%;
@@ -122,6 +124,7 @@ body, input {
   color: black;
   background-image: -moz-linear-gradient(top, #C0C0C0, #969696);
   background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,#C0C0C0),color-stop(1,#969696));
+  opacity: 0.7;
 }
 
 #content {
@@ -134,11 +137,11 @@ body, input {
 
 #content li {
   padding: 5px;
-  background-color: #313131;
+  background-color: hsla(0, 0%, 19%, 0.7);
 }
 
 #content li:nth-child(odd) {
-  background-color: #373737;
+  background-color: hsla(0, 0%, 22%, 0.7);
 }
 
 #credentials {
