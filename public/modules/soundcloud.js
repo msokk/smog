@@ -2,8 +2,8 @@
   Smog.SoundCloud = function() {
     var that = this;
     this.consumerKey = "46q8ZDUJD6nbBsaka0DgfA";
-    $("body").append('<audio id="sc-player" preload="auto"></audio>');
-    
+    $("footer").append('<audio id="sc-player" preload="auto"></audio>');
+
     Smog.filter("soundcloud", function(str) {
       if(str.indexOf("!sc") == 0) {
         var command = str.split(" ");
@@ -19,10 +19,10 @@
       }
     });
   }
-  
+
   Smog.SoundCloud.prototype.search = function(str) {
     var that = this;
-    $.getJSON("http://api.soundcloud.com/tracks.json?q=" + str + "&consumer_key=" + 
+    $.getJSON("http://api.soundcloud.com/tracks.json?q=" + str + "&consumer_key=" +
       this.consumerKey, function(data) {
       if(data) {
         $("#sc-player").attr('src', data[0].stream_url + "?consumer_key=" + that.consumerKey);

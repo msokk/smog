@@ -1,7 +1,7 @@
 var Smog = {
   ver: "0.0.1",
-  debug : true,
-  log : function (msg) {
+  debug: true,
+  log: function (msg) {
     if(window.console != undefined && this.debug) {
       console.log(msg);
     }
@@ -20,6 +20,8 @@ $(document).ready(function() {
   Smog.start = function() { return new Smog.Main(); };
 
   Smog.Main = function() {
+    Smog.lang = Smog.Storage.get("lang", true) || "en";
+
     var that = this,
     socket = this.socket = new io.Socket();
     socket.connect();
@@ -268,12 +270,12 @@ $(document).ready(function() {
 
       Smog.on("chat-new", function(data) {
         Smog.UI.addUser(data.username, data.sessId);
-        Smog.UI.displayInfoMsg(data.username + " liitus!");
+        Smog.UI.displayInfoMsg(data.username + " joined!");
       });
 
       Smog.on("chat-leave", function(data) {
         Smog.UI.deleteUser(data.username);
-        Smog.UI.displayInfoMsg(data.username + " lahkus!");
+        Smog.UI.displayInfoMsg(data.username + " left!");
       });
 
       Smog.on("chat", function(data) {
@@ -363,7 +365,6 @@ $(document).ready(function() {
     script.src = "modules/" + name + ((Smog.debug)? "?ts=" + new Date().getTime() : "");
     head.appendChild(script);
   };
-
 })();
 
 

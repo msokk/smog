@@ -2,12 +2,15 @@
   Smog.filter("youtube", function(str) {
     if(str.indexOf("youtube.com/watch") != -1) {
       var id = str.split('v=')[1].substr(0,11);
-      var ytStr = '<br/><iframe title='+
+      var ytStr = '<br/><br/><iframe title='+
         '"YouTube video player" width="401" height="250" '+
         'src="http://www.youtube.com/embed/'+ id +'?rel=0" '+
         'frameborder="0" allowfullscreen></iframe>';
-      Smog.UI.displayInfoMsg(Smog.username + ' posted:' + ytStr);
-      return ytStr;
+      this.socket.send({
+        type: "embeddedVideo",
+        username: Smog.username,
+        embed: ytStr
+      });
     } else {
       return str;
     }
@@ -17,12 +20,20 @@
     var links = str.match(/vimeo.com\/[0-9]*/i);
     if(links) {
       var id = links[0].match(/[0-9]*$/gi)[0];
-      Smog.UI.displayInfoMsg(Smog.username + ' posted:<br/><iframe src="'+
-          'http://player.vimeo.com/video/'+ id + '" width="400" height="225"'+
-          ' frameborder="0"></iframe>');
+      var vimeo = '<br/><br/><iframe src="http://player.vimeo.com/video/'+
+          id + '" width="400" height="225" frameborder="0"></iframe>';
+      this.socket.send({
+        type: "embeddedVideo",
+        username: Smog.username,
+        embed: vimeo
+      });
     } else {
       return str;
     }
+  });
+
+  Smog.on('embeddedVideo', function(data) {
+    Smog.UI.displayInfoMsg(data.username + ' posted:' + data.embed);
   });
 
   Smog.filter("makelink", function(str) {
