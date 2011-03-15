@@ -316,8 +316,7 @@ $(document).ready(function() {
       '<span class="name">'+nick+'</span>: '+
       '<span class="msg">'+msg+'</span>'+
       '</li>')
-        .appendTo('#container ul')
-        .fadeIn();
+        .appendTo('#container ul');
       $("li.message:last")[0].scrollIntoView();
     },
 
@@ -326,8 +325,7 @@ $(document).ready(function() {
       '<span class="timestamp"></span>'+
       '<span class="msg">'+msg+'</span>'+
       '</li>')
-        .appendTo('#container ul')
-        .fadeIn();
+        .appendTo('#container ul');
       $("li.message:last")[0].scrollIntoView();
     },
 
