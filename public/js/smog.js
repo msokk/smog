@@ -278,9 +278,22 @@ $(document).ready(function() {
         Smog.UI.displayInfoMsg(data.username + " left!");
       });
 
+      Smog.on('chat-buffer', function(data) {
+        var logStr = "";
+        for(var i = 0; i < data.buffer.length; i++) {
+          var msg = data.buffer[i];
+          logStr += '<li class="message">'+
+          '<span class="timestamp"></span>'+
+          '<span class="name">'+msg.username+'</span>: '+
+          '<span class="msg">'+msg.msg+'</span>'+
+          '</li>';
+        }
+        $('#container ul').html(logStr);
+        $("li.message:last")[0].scrollIntoView();
+      });
+
       Smog.on("chat", function(data) {
         Smog.UI.displayChatMsg(data.username, data.msg);
-        $("#content").scrollTop($("#content")[0].scrollHeight);
       });
     }
   };
@@ -305,7 +318,7 @@ $(document).ready(function() {
       '</li>')
         .appendTo('#container ul')
         .fadeIn();
-        $('#content').scrollTop($('ul').height());
+      $("li.message:last")[0].scrollIntoView();
     },
 
     displayInfoMsg : function(msg) {
@@ -315,7 +328,7 @@ $(document).ready(function() {
       '</li>')
         .appendTo('#container ul')
         .fadeIn();
-        $('#content').scrollTop($('ul').height());
+      $("li.message:last")[0].scrollIntoView();
     },
 
     setStatus : function(color) {
