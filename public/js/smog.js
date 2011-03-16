@@ -261,6 +261,8 @@ $(document).ready(function() {
         for(var key in data.users){
           Smog.UI.addUser(data.users[key], key);
         }
+        
+        Smog.UI.setMotd(data.motd);
 
       });
 
@@ -288,7 +290,7 @@ $(document).ready(function() {
           '<span class="msg">'+msg.msg+'</span>'+
           '</li>';
         }
-        $('#container ul').html(logStr);
+        $('#container ul').append(logStr);
         $("li.message:last")[0].scrollIntoView();
       });
 
@@ -301,16 +303,16 @@ $(document).ready(function() {
   Smog.UI = {
     hasFocus: true,
 
-    addUser : function(username, sessId) {
+    addUser: function(username, sessId) {
       $('<li data-id="' + sessId + '" data-user="' + username +
         '">' + username + '</li>').appendTo('#userList');
     },
 
-    deleteUser : function(username) {
+    deleteUser: function(username) {
       $("li[data-user='" + username + "']").remove();
     },
 
-    displayChatMsg : function(nick, msg) {
+    displayChatMsg: function(nick, msg) {
       $('<li class="message">'+
       '<span class="timestamp"></span>'+
       '<span class="name">'+nick+'</span>: '+
@@ -320,7 +322,7 @@ $(document).ready(function() {
       $("li.message:last")[0].scrollIntoView();
     },
 
-    displayInfoMsg : function(msg) {
+    displayInfoMsg: function(msg) {
       $('<li class="message">'+
       '<span class="timestamp"></span>'+
       '<span class="msg">'+msg+'</span>'+
@@ -329,8 +331,12 @@ $(document).ready(function() {
       $("li.message:last")[0].scrollIntoView();
     },
 
-    setStatus : function(color) {
+    setStatus: function(color) {
       $("#microBar").css("background-color", color);
+    },
+    
+    setMotd: function(msg) {
+      $('#motd').html(msg);
     },
 
     clearTitle: function() {

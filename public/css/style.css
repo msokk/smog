@@ -1,4 +1,4 @@
-/*
+﻿/*
  html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
 */
 html, body, div, span, object, iframe,
@@ -35,8 +35,7 @@ ul { padding: 0px; margin: 0px; list-style: none; }
 
 @font-face {
   font-family: 'TeXGyreHerosRegular';
-  src: url('texgyreheros-regular-webfont.eot?') format('eot'),
-       url('texgyreheros-regular-webfont.woff') format('woff'),
+  src: url('texgyreheros-regular-webfont.woff') format('woff'),
        url('texgyreheros-regular-webfont.ttf') format('truetype'),
        url('texgyreheros-regular-webfont.svg#webfonth5L3g9Xm') format('svg');
   font-weight: normal;
@@ -48,6 +47,126 @@ ul { padding: 0px; margin: 0px; list-style: none; }
   overflow: hidden;
   white-space: nowrap;
 }
+
+.gl {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5), 
+    inset 0 1px rgba(255,255,255,0.3), 
+    inset 0 10px rgba(200,200,200,0.2), 
+    inset 0 10px 20px rgba(255,255,255,0.25), 
+    inset 0 -15px 30px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.5), 
+    inset 0 1px rgba(255,255,255,0.3), 
+    inset 0 10px rgba(200,200,200,0.2), 
+    inset 0 10px 20px rgba(255,255,255,0.25), 
+    inset 0 -15px 30px rgba(0,0,0,0.3);
+  -moz-box-shadow: inset 0 1px rgba(255,255,255,0.3), 
+    inset 0 10px rgba(200,200,200,0.2), 
+    inset 0 10px 20px rgba(255,255,255,0.25), 
+    inset 0 -15px 30px rgba(0,0,0,0.3);
+}
+
+/*
+ Icons
+*/
+
+@font-face {
+  font-family: 'IconicStroke';
+    src: url("iconic_stroke.woff") format('woff'),
+         url("iconic_stroke.ttf") format('truetype'),
+         url("iconic_stroke.svg#iconic") format('svg'),
+	       url("iconic_stroke.otf") format('opentype');
+}
+
+.iconic {
+  font-size: 20px;
+  color: gray;
+	font-family: "IconicStroke";
+}
+
+.iconic:hover {
+	color: white;
+}
+
+.iconic.home:before { content: '!'; }
+.iconic.at:before { content: "@"; }
+.iconic.quote:before { content: '"'; }
+.iconic.quote-alt:before { content: "'"; }
+.iconic.arrow-up:before { content: "3"; }
+.iconic.arrow-right:before { content: "4"; }
+.iconic.arrow-bottom:before { content: "5"; }
+.iconic.arrow-left:before { content: "6"; }
+.iconic.arrow-up-alt:before { content: "#"; }
+.iconic.arrow-right-alt:before { content: "$"; }
+.iconic.arrow-bottom-alt:before { content: "%"; }
+.iconic.arrow-left-alt:before { content: "^"; }
+.iconic.move:before { content: "9"; }
+.iconic.move-vertical:before { content: "8"; }
+.iconic.move-horizontal:before { content: "7"; }
+.iconic.move-alt:before { content: "("; }
+.iconic.move-vertical-alt:before { content: "*"; }
+.iconic.move-horizontal-alt:before { content: "&"; }
+.iconic.cursor:before { content: ")"; }
+.iconic.plus:before { content: "+"; }
+.iconic.plus-alt:before { content: "="; }
+.iconic.minus:before { content: "-"; }
+.iconic.minus-alt:before { content: "_"; }
+.iconic.new-window:before { content: "1"; }
+.iconic.dial:before { content: "2"; }
+.iconic.lightbulb:before { content: "0"; }
+.iconic.link:before { content: "/"; }
+.iconic.image:before { content: "?"; }
+.iconic.article:before { content: ">"; }
+.iconic.read-more:before { content: "."; }
+.iconic.headphones:before { content: ","; }
+.iconic.equalizer:before { content: "<"; }
+.iconic.fullscreen:before { content: ":"; }
+.iconic.exit-fullscreen:before { content: ";"; }
+.iconic.spin:before { content: "["; }
+.iconic.spin-alt:before { content: "{"; }
+.iconic.moon:before { content: "]"; }
+.iconic.sun:before { content: "}"; }
+.iconic.map-pin:before { content: "\\"; }
+.iconic.pin:before { content: "|"; }
+.iconic.eyedropper:before { content: "~"; }
+.iconic.denied:before { content: "`"; }
+.iconic.calendar:before { content: "a"; }
+.iconic.calendar-alt:before { content: "A"; }
+.iconic.bolt:before { content: "b"; }
+.iconic.clock:before { content: "c"; }
+.iconic.document:before { content: "d"; }
+.iconic.book:before { content: "e"; }
+.iconic.book-alt:before { content: "E"; }
+.iconic.magnifying-glass:before { content: "f"; }
+.iconic.tag:before { content: "g"; }
+.iconic.heart:before { content: "h"; }
+.iconic.info:before { content: "i"; }
+.iconic.chat:before { content: "j"; }
+.iconic.chat-alt:before { content: "J"; }
+.iconic.key:before { content: "k"; }
+.iconic.unlocked:before { content: "l"; }
+.iconic.locked:before { content: "L"; }
+.iconic.mail:before { content: "m"; }
+.iconic.mail-alt:before { content: "M"; }
+.iconic.phone:before { content: "n"; }
+.iconic.box:before { content: "o"; }
+.iconic.pencil:before { content: "p"; }
+.iconic.pencil-alt:before { content: "P"; }
+.iconic.comment:before { content: "q"; }
+.iconic.comment-alt:before { content: "Q"; }
+.iconic.rss:before { content: "r"; }
+.iconic.star:before { content: "s"; }
+.iconic.trash:before { content: "t"; }
+.iconic.user:before { content: "u"; }
+.iconic.volume:before { content: "v"; }
+.iconic.mute:before { content: "V"; }
+.iconic.cog:before { content: "w"; }
+.iconic.cog-alt:before { content: "W"; }
+.iconic.x:before { content: "x"; }
+.iconic.x-alt:before { content: "X"; }
+.iconic.check:before { content: "y"; }
+.iconic.check-alt:before { content: "Y"; }
+.iconic.beaker:before { content: "z"; }
+.iconic.beaker-alt:before { content: "Z"; }
 
 
 /*
@@ -61,6 +180,7 @@ body, input {
   background-color: #212121;
 
 }
+
 
 ::selection {
   background: white;
@@ -80,11 +200,30 @@ a:hover {
 }
 
 header {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(30, 30, 30, 0.7);
+  border-bottom: solid 1px rgb(41, 41, 41);
   position: relative;
   z-index: 2;
   height: 20px;
   padding: 7px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#buttonBar {
+  float: right;
+}
+
+#settings {
+}
+
+#logout {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+#logout:hover {
+  color: white;
 }
 
 section {
@@ -99,7 +238,7 @@ section {
   width: 100%;
   height: 1px;
   background-color: red;
-  z-index: 1000;
+  z-index: 101;
   top: 0px;
   left: 0px;
 }
@@ -157,15 +296,10 @@ section {
   width: 99%;
   border: none;
   outline: none;
-
   padding: 0.5%;
   color: white;
   background: rgba(0,0,0,0.5);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
-  -webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
-  -moz-box-shadow: inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
 }
-
 
 
 /*
@@ -180,6 +314,7 @@ section {
   height: 100%;
   padding-left: 3px;
   font-size: 14px;
+  border-left: solid 1px rgba(56, 56, 56, 0.7);;
 }
 
 #userList {
@@ -223,8 +358,18 @@ section {
   width: 100%;
   height: 100%;
   background: #212121;
-  background: -moz-linear-gradient(top, #909090 0%, #000000 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#909090), color-stop(100%,#000000));
+  background: -moz-linear-gradient(
+    top, 
+    #909090 0%,
+    #000000 100%
+  );
+  background: -webkit-gradient(
+    linear, 
+    left top, 
+    left bottom, 
+    color-stop(0%,#909090), 
+    color-stop(100%,#000000)
+  );
   z-index: 100;
 }
 
@@ -244,8 +389,7 @@ section {
 }
 
 ::-webkit-scrollbar-track-piece {
-  background:
-  -webkit-gradient(
+  background: -webkit-gradient(
     linear,
     0 0,
     100% 0,
@@ -291,7 +435,7 @@ section {
 
 ::-webkit-scrollbar-track-piece:horizontal{
   background: none;
-  -webkit-box-shadow:none;
+  -webkit-box-shadow: none;
 }
 
 ::-webkit-scrollbar:horizontal{
@@ -300,14 +444,13 @@ section {
 
 ::-webkit-scrollbar-thumb:horizontal{
   height: 12px;
-  -webkit-border-radius:12px;
-  background:
-  -webkit-gradient(
-          linear,
-          0 0,
-          0 100%,
-          from(rgba(0,0,0,0.4)),
-          to(rgba(0,0,0,0.2))
+  -webkit-border-radius: 12px;
+  background: -webkit-gradient(
+    linear,
+    0 0,
+    0 100%,
+    from(rgba(0,0,0,0.4)),
+    to(rgba(0,0,0,0.2))
   );
   border: 6px solid transparent;
   -webkit-background-clip: padding-box;
