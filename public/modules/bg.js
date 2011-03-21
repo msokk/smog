@@ -45,7 +45,7 @@
       rotation: Math.randRange(-180, 180),
       size: Math.randRange(40, 100),
       padding: Math.randRange(-10, 10),
-      n: Math.randRange(2, 9),
+      n: Math.randRange(3, 9),
       jitter: 20
     },
 
@@ -125,9 +125,8 @@
 
 
     save: function() {
-      
-    }
 
+    }
 
   };
 

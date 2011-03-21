@@ -67,6 +67,7 @@ $(document).ready(function() {
     Smog.Core.init.call(this);
 
     this.bindLogin();
+    this.bindLogout();
     this.bindInput();
 
     $(window).bind('blur', function(e) {
@@ -141,7 +142,9 @@ $(document).ready(function() {
 
   Smog.Main.prototype.bindLogin = function() {
     var that = this;
-    if(!Smog.Storage.get("username")) {
+    var persistent = Smog.Storage.get("persistent", true) || false;
+
+    if(!Smog.Storage.get("username", persistent)) {
       var user = "",
           credentials = $('#credentials');
       credentials.focus();
@@ -178,13 +181,25 @@ $(document).ready(function() {
 
     //sessionStorage has data, login automatically
     } else {
-      Smog.username = Smog.Storage.get("username");
+      Smog.username = Smog.Storage.get("username", persistent);
       that.socket.send({
         type: "login-request",
         username: Smog.username,
-        hash: Smog.Storage.get("hash")
+        hash: Smog.Storage.get("hash", persistent)
       });
     }
+
+
+    //Bind remember button
+    $("#lock").click(function() {
+      if($(this).hasClass("persistent")) {
+        $(this).toggleClass("persistent");
+        Smog.Storage.set("persistent", false, true);
+      } else {
+        $(this).toggleClass("persistent");
+        Smog.Storage.set("persistent", false, true);
+      }
+    });
   };
 
   Smog.Main.prototype.sendMsg = function() {
@@ -215,6 +230,18 @@ $(document).ready(function() {
     $("#entryBox").val("");
   };
 
+  Smog.Main.prototype.bindLogout = function() {
+    var that = this;
+    $("#logout").click(function() {
+      that.socket.disconnect();
+      Smog.Storage.unset("username");
+      Smog.Storage.unset("username", true);
+      Smog.Storage.unset("hash");
+      Smog.Storage.unset("hash", true);
+      window.location.href = "";
+    });
+  };
+
   Smog.Core = {
     init: function() {
       var that = this;
@@ -235,12 +262,14 @@ $(document).ready(function() {
 
       Smog.on("login-success", function(data) {
         //Store username and hash for autologin
-        if(Smog.Storage.get("username")) {
+        var persistent = Smog.Storage.get("persistent", true) || false;
+
+        if(Smog.Storage.get("username", persistent)) {
           $("#loginPane").remove();
           $("#overlay").remove();
         } else {
-          Smog.Storage.set("username", Smog.username);
-          Smog.Storage.set("hash", Smog._hash);
+          Smog.Storage.set("username", Smog.username, persistent);
+          Smog.Storage.set("hash", Smog._hash, persistent);
           delete Smog._hash;
 
           $("#loginPane").fadeOut(1000, function() { $(this).remove(); });
@@ -261,7 +290,7 @@ $(document).ready(function() {
         for(var key in data.users){
           Smog.UI.addUser(data.users[key], key);
         }
-        
+
         Smog.UI.setMotd(data.motd);
 
       });
@@ -334,7 +363,7 @@ $(document).ready(function() {
     setStatus: function(color) {
       $("#microBar").css("background-color", color);
     },
-    
+
     setMotd: function(msg) {
       $('#motd').html(msg);
     },
