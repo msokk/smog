@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+var util = require('util');
+
+require(__dirname + "/../server.js");
+
+if(!process.env.PORT) {
+  var url = "http://127.0.0.1:3000";
+  util.log("Trying to start your browser in: " + url + "\n");
+  require("child_process").exec("x-www-browser " + url);
+}
