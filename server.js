@@ -5,7 +5,7 @@ var connect = require('connect'),
 //Static server
 var server = connect.createServer(
     //connect.logger(),
-    connect.favicon(),
+    //connect.favicon(),
     connect.static(__dirname + '/public')
 );
 server.listen(port);
