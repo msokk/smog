@@ -6,7 +6,7 @@ require.paths.unshift(__dirname);
 
 var fs = require('fs'),
     modules = fs.readdirSync(__dirname),
-    clientModules = fs.readdirSync(__dirname + "/../public/modules"),
+    clientModules = fs.readdirSync(__dirname + "/../public/js/modules"),
     moduleMap = {};
 
 exports.module = {};

@@ -1,0 +1,13 @@
+{
+  src : "./public/js", // the source dir of js files
+  dest : "./public", // the destination of your minified files
+  compiledExtension : "min",
+  runJslint : false,
+  runGCompiler : true,
+  keepCompiled : false, // if should keep the minified files
+  aggregateTo : "all.js",
+  order : [], // The order of aggregation (example : we want jquery before jquery.ui) Must not specified every file.
+  exclude : ["socket.io-0.6.2-min"], // Files that are not compiled but still aggregated
+  recursive : true,
+  debug : true,
+}
